@@ -1,6 +1,7 @@
 package time_util
 
 import (
+	"context"
 	"errors"
 	"time"
 )
@@ -22,4 +23,12 @@ func FromString(s string) (time.Time, error) {
 		return time.Time{}, errors.New("invalid time")
 	}
 	return t.UTC(), nil
+}
+
+func LocalCurrentTime(ctx context.Context) time.Time {
+	location, err := time.LoadLocation(ctx.Value("tz_info").(string))
+	if err != nil {
+		return time.Now().UTC()
+	}
+	return time.Now().In(location)
 }
